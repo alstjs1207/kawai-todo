@@ -1,21 +1,55 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar, TextInput, Dimensions, Platform } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  StatusBar,
+  TextInput,
+  Dimensions,
+  Platform,
+  ScrollView
+} from 'react-native';
+import ToDo from "./ToDo";
 
-const { height, width } = Dimensions.get("window");
+const {height, width} = Dimensions.get("window");
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      <Text style={styles.title}> Kawai To Do</Text>
+export default class App extends React.Component {
+
+  state = {
+    newToDo: ""
+  };
+
+  render() {
+      const { newToDo } = this.state;
+      return (
+        <View style={styles.container}>
+        <StatusBar barStyle="light-content"/>
+      <Text style={styles.title}>
+        Kawai To Do</Text>
       <View style={styles.card}>
-        <TextInput style={styles.input} placeholder={"New To Do"}>
-
-        </TextInput>
+        <TextInput
+          style={styles.input}
+          placeholder={"New To Do"}
+          value={newToDo}
+          onChangeText={this._controlNewToDo}
+          placeholderTextColor={"#d1caca"}
+          returnKeyType={"done"}
+          autoCorrect={false}
+        />
+      <ScrollView contentContainerStyle={styles.toDos}>
+          <ToDo />
+        </ScrollView>
       </View>
-    </View>
-  );
+    </View>);
+  }
+
+  _controlNewToDo = text => {
+    this.setState({
+      newToDo: text
+    });
+  };
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -50,5 +84,15 @@ const styles = StyleSheet.create({
         elevation: 3
       }
     })
+  },
+  input: {
+    padding: 20,
+    borderBottomColor: "#bbb",
+    borderBottomWidth: 1,
+    fontSize: 20
+
+  },
+  toDos: {
+    alignItems: "center"
   }
 });
