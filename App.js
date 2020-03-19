@@ -10,22 +10,39 @@ import {
   ScrollView
 } from 'react-native';
 import ToDo from "./ToDo";
+import { AppLoading } from 'expo';
+import uuid from 'react-native-uuid';
+import { Buffer } from 'buffer';
+global.Buffer = Buffer; // very important
 
 const {height, width} = Dimensions.get("window");
 
 export default class App extends React.Component {
 
   state = {
-    newToDo: ""
+    newToDo: "",
+    loadedToDos: false,
+    toDos: {}
   };
 
+  componentDidMount = () => {
+    this._loadToDos();
+  }
+
   render() {
-      const { newToDo } = this.state;
+      const { newToDo, loadedToDos, toDos } = this.state;
+
+      if(!loadedToDos){
+       return <AppLoading />;
+      }
+      else {
+
       return (
         <View style={styles.container}>
         <StatusBar barStyle="light-content"/>
       <Text style={styles.title}>
-        Kawai To Do</Text>
+        Kawai To Do
+      </Text>
       <View style={styles.card}>
         <TextInput
           style={styles.input}
@@ -35,18 +52,70 @@ export default class App extends React.Component {
           placeholderTextColor={"#d1caca"}
           returnKeyType={"done"}
           autoCorrect={false}
+          onSubmitEditing={this._addToDos}
         />
       <ScrollView contentContainerStyle={styles.toDos}>
-          <ToDo text={'Hello Todo'}/>
+          {Object.values(toDos).map(toDo => <ToDo key={toDo.id} {...toDo} deleteToDo={this._deleteToDo} />)}
         </ScrollView>
       </View>
     </View>);
+      }
   }
 
   _controlNewToDo = text => {
     this.setState({
       newToDo: text
     });
+  };
+
+  _loadToDos = () => {
+    this.setState({
+      loadedToDos: true
+    })
+  };
+
+  _addToDos = () => {
+    const {newToDo} = this.state;
+    if(newToDo !== ""){
+      this.setState(prevState => {
+        
+        const ID = uuid.v1();
+        
+        const newToDoObject = {
+          [ID]:{
+            id:ID,
+            isCompleted: false,
+            text: newToDo,
+            createdAt: Date.now()
+          }
+        };
+        const newState = {
+          ...prevState,
+          newToDo: "",
+          toDos: {
+            ...prevState.toDos,
+            ...newToDoObject
+          }
+        }
+        return {...newState }
+      });
+    }else {
+
+    }
+  };
+
+  _deleteToDo = (id) => {
+    this.setState(prevState => {
+      const toDos = prevState.toDos;
+      delete toDos[id];
+
+      const newState = {
+        ...prevState,
+        ...toDos
+      }
+      return {...newState};
+    })
+    
   };
 }
 
