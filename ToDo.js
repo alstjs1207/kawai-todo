@@ -22,17 +22,15 @@ export default class ToDo extends React.Component {
     text: PropTypes.string.isRequired,
     isCompleted: PropTypes.bool.isRequired,
     deleteToDo: PropTypes.func.isRequired,
-    id: PropTypes.string.isRequired
-  }
-  
-  state = {
-    isEditing: false,
-    toDoValue: ""
+    id: PropTypes.string.isRequired,
+    uncompleteToDo: PropTypes.func.isRequired,
+    completeToDo: PropTypes.func.isRequired,
+    updateToDo: PropTypes.func.isRequired
   }
 
   render() {
-    const {isCompleted, isEditing, toDoValue} = this.state;
-    const {text, id, deleteToDo} = this.props;
+    const {isEditing, toDoValue} = this.state;
+    const {text, id, deleteToDo, isCompleted} = this.props;
     return (<View style={styles.container}>
       <View style={styles.column}>
         <TouchableOpacity onPress={this._toggleComplete}>
@@ -44,11 +42,16 @@ export default class ToDo extends React.Component {
         </TouchableOpacity>
         {
           isEditing
-            ? (<TextInput style={[
-                styles.input, styles.text, isCompleted
+            ? (<TextInput style={[styles.text,styles.input, 
+              isCompleted
                   ? styles.completedText
                   : styles.uncompletedText
-              ]} value={toDoValue} multiline={true} onChangeText={this._contorlInput} returnKeyType={"done"} onBlur={this._finishEditing}/>)
+              ]} value={toDoValue} 
+                 multiline={true} 
+                 onChangeText={this._contorlInput} 
+                 returnKeyType={"done"} 
+                 onBlur={this._finishEditing}
+                 underlineColorAndroid={"transparent"}/>)
             : (<Text style={[styles.text,
               isCompleted
                 ? styles.completedText
@@ -69,10 +72,10 @@ export default class ToDo extends React.Component {
           : (<View style={styles.actions}>
             <TouchableOpacity onPressOut={this._startEditing}>
               <View style={styles.actionContainer}>
-                <Text style={styles.actionText}>📌</Text>
+                <Text style={styles.actionText}>✏️</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPressOut={() => deleteToDo(id)}>
+            <TouchableOpacity onPressOut={(event) => {event.stopPropagation; deleteToDo(id)}}>
               <View style={styles.actionContainer}>
                 <Text style={styles.actionText}>❌</Text>
               </View>
@@ -81,15 +84,23 @@ export default class ToDo extends React.Component {
       }
     </View>);
   }
-  _toggleComplete = () => {
-    this.setState(prevState => {
-      return {
-        isCompleted: !prevState.isCompleted
-      };
-    });
+  _toggleComplete = event => {
+    event.stopPropagation();
+    // this.setState(prevState => {
+    //   return {
+    //     isCompleted: !prevState.isCompleted
+    //   };
+    // });
+    const {isCompleted, uncompleteToDo, completeToDo, id} = this.props;
+    if(isCompleted){
+      uncompleteToDo(id);
+    } else {
+      completeToDo(id);
+    }
   };
 
-  _startEditing = () => {
+  _startEditing = event => {
+    event.stopPropagation();
     //const {text} = this.props;
     this.setState({
       isEditing: true
@@ -97,7 +108,11 @@ export default class ToDo extends React.Component {
     });
   };
 
-  _finishEditing = () => {
+  _finishEditing = event => {
+    event.stopPropagation();
+    const {toDoValue} = this.state;
+    const {id, updateToDo} = this.props;
+    updateToDo(id,toDoValue);
     this.setState({isEditing: false});
   };
 
