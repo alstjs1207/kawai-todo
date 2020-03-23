@@ -13,6 +13,7 @@ import {
 import ToDo from "./ToDo";
 import { AppLoading } from 'expo';
 import uuid from 'react-native-uuid';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const {height, width} = Dimensions.get("window");
 
@@ -39,12 +40,12 @@ export default class App extends React.Component {
         <View style={styles.container}>
         <StatusBar barStyle="light-content"/>
       <Text style={styles.title}>
-        Daily To Do
+        Daily To Do List
       </Text>
       <View style={styles.card}>
         <TextInput
           style={styles.input}
-          placeholder={"New To Do"}
+          placeholder={"오늘의 할 일을 작성해 보세요"}
           value={newToDo}
           onChangeText={this._controlNewToDo}
           placeholderTextColor={"#d1caca"}
@@ -52,16 +53,22 @@ export default class App extends React.Component {
           autoCorrect={false}
           onSubmitEditing={this._addToDos}
         />
-      <ScrollView contentContainerStyle={styles.toDos}>
+      {/* <ScrollView contentContainerStyle={styles.toDos}> */}
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.toDos}
+        extraScrollHeight={130}
+        >
           {Object.values(toDos).reverse().map(toDo =>
-            <ToDo 
+            (<ToDo 
               key={toDo.id} 
               deleteToDo={this._deleteToDo} 
               uncompleteToDo={this._uncompleteToDo}
               updateToDo={this._updateToDo}
-              completeToDo={this._completeToDo}
-              {...toDo} />)}
-        </ScrollView>
+              completeToDo={this._completeToDo}          
+              {...toDo} />)
+              )}
+        </KeyboardAwareScrollView>
+        {/* </ScrollView> */}
       </View>
     </View>);
   }
@@ -187,14 +194,14 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F23657',
+    backgroundColor: '#1eb2a6',
     alignItems: 'center'
   },
   title: {
     color: "white",
     fontSize: 20,
     marginTop: 50,
-    fontWeight: "200",
+    fontWeight: "500",
     marginBottom: 30
   },
   card: {

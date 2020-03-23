@@ -5,7 +5,8 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
-  TextInput
+  TextInput,
+  ReactNative
 } from 'react-native';
 
 import PropTypes from 'prop-types';
@@ -25,12 +26,12 @@ export default class ToDo extends React.Component {
     id: PropTypes.string.isRequired,
     uncompleteToDo: PropTypes.func.isRequired,
     completeToDo: PropTypes.func.isRequired,
-    updateToDo: PropTypes.func.isRequired
+    updateToDo: PropTypes.func.isRequired,
   }
 
   render() {
     const {isEditing, toDoValue} = this.state;
-    const {text, id, deleteToDo, isCompleted} = this.props;
+    const {text, id, deleteToDo, isCompleted, scrollToInput} = this.props;
     return (<View style={styles.container}>
       <View style={styles.column}>
         <TouchableOpacity onPress={this._toggleComplete}>
@@ -65,14 +66,14 @@ export default class ToDo extends React.Component {
           ? (<View style={styles.actions}>
             <TouchableOpacity onPressOut={this._finishEditing}>
               <View style={styles.actionContainer}>
-                <Text style={styles.actionText}>✅</Text>
+                <Text style={styles.actionText}>👌</Text>
               </View>
             </TouchableOpacity>
           </View>)
           : (<View style={styles.actions}>
             <TouchableOpacity onPressOut={this._startEditing}>
               <View style={styles.actionContainer}>
-                <Text style={styles.actionText}>✏️</Text>
+                <Text style={styles.actionText}>✍</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPressOut={(event) => {event.stopPropagation; deleteToDo(id)}}>
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
     marginRight: 20
   },
   completedCircle: {
-    borderColor: "rgb(10, 134, 204)"
+    borderColor: "#1eb2a6"
   },
   uncompletedCircle: {
     borderColor: "#F23657"
