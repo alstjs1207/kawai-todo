@@ -13,8 +13,6 @@ import {
 import ToDo from "./ToDo";
 import { AppLoading } from 'expo';
 import uuid from 'react-native-uuid';
-import { Buffer } from 'buffer';
-global.Buffer = Buffer; // very important
 
 const {height, width} = Dimensions.get("window");
 
