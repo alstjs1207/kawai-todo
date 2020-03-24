@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Daily To Do",
-    "description": "Daily To Do App made with React Native",
+    "description": "Daily To Do App made with React Native  Ver 1.2",
     "slug": "daily-todo",
     "privacy": "public",
     "sdkVersion": "36.0.0",

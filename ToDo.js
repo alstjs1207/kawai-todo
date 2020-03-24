@@ -43,15 +43,16 @@ export default class ToDo extends React.Component {
         </TouchableOpacity>
         {
           isEditing
-            ? (<TextInput style={[styles.text,styles.input, 
+            ? (<TextInput style={[styles.text,styles.input,
               isCompleted
                   ? styles.completedText
                   : styles.uncompletedText
-              ]} value={toDoValue} 
-                 multiline={true} 
-                 onChangeText={this._contorlInput} 
-                 returnKeyType={"done"} 
+              ]} value={toDoValue}
+                 multiline={true}
+                 onChangeText={this._contorlInput}
+                 returnKeyType={"done"}
                  onBlur={this._finishEditing}
+                 autoFocus={true}
                  underlineColorAndroid={"transparent"}/>)
             : (<Text style={[styles.text,
               isCompleted
@@ -69,6 +70,14 @@ export default class ToDo extends React.Component {
                 <Text style={styles.actionText}>👌</Text>
               </View>
             </TouchableOpacity>
+          </View>)
+          : isCompleted
+          ? (<View style={styles.actions}>
+              <TouchableOpacity onPressOut={(event) => {event.stopPropagation; deleteToDo(id)}}>
+                <View style={styles.actionContainer}>
+                  <Text style={styles.actionText}>❌</Text>
+                </View>
+              </TouchableOpacity>
           </View>)
           : (<View style={styles.actions}>
             <TouchableOpacity onPressOut={this._startEditing}>

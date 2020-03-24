@@ -31,7 +31,7 @@ export default class App extends React.Component {
 
   render() {
       const { newToDo, loadedToDos, toDos } = this.state;
-
+      // console.log('render:',toDos);
       if(!loadedToDos){
        return <AppLoading />;
       }
@@ -40,7 +40,7 @@ export default class App extends React.Component {
         <View style={styles.container}>
         <StatusBar barStyle="light-content"/>
       <Text style={styles.title}>
-        Daily To Do List
+        Daily To Do
       </Text>
       <View style={styles.card}>
         <TextInput
@@ -59,12 +59,13 @@ export default class App extends React.Component {
         extraScrollHeight={130}
         >
           {Object.values(toDos).reverse().map(toDo =>
-            (<ToDo 
-              key={toDo.id} 
-              deleteToDo={this._deleteToDo} 
+            (
+              <ToDo
+              key={toDo.id}
+              deleteToDo={this._deleteToDo}
               uncompleteToDo={this._uncompleteToDo}
               updateToDo={this._updateToDo}
-              completeToDo={this._completeToDo}          
+              completeToDo={this._completeToDo}
               {...toDo} />)
               )}
         </KeyboardAwareScrollView>
@@ -82,9 +83,11 @@ export default class App extends React.Component {
   _loadToDos = async () => {
     try{
       const toDos =  await AsyncStorage.getItem("toDos");
+      const parsedToDos = JSON.parse(toDos);
+      //console.log('data',parsedToDos);
       setTimeout( () => this.setState({
         loadedToDos: true,
-        toDos: JSON.parse(toDos) || {}
+        toDos: parsedToDos || {}
       }),2000);
     }catch(err) {
       console.log(err);
@@ -96,15 +99,16 @@ export default class App extends React.Component {
     const {newToDo} = this.state;
     if(newToDo !== ""){
       this.setState(prevState => {
-        
+
         const ID = uuid.v1();
-        
+
         const newToDoObject = {
           [ID]:{
             id:ID,
             isCompleted: false,
             text: newToDo,
-            createdAt: Date.now()
+            createdAt: Date.now(),
+            modifyAt: Date.now()
           }
         };
         const newState = {
@@ -114,8 +118,9 @@ export default class App extends React.Component {
             ...prevState.toDos,
             ...newToDoObject
           }
-        }
+        };
         this._saveToDos(newState.toDos);
+        // console.log("new ToDos:",newState.toDos);
         return {...newState }
       });
     }
@@ -133,7 +138,7 @@ export default class App extends React.Component {
       this._saveToDos(newState.toDos);
       return {...newState};
     })
-    
+
   };
   _uncompleteToDo = id => {
     this.setState(prevState => {
@@ -143,29 +148,31 @@ export default class App extends React.Component {
           ...prevState.toDos,
           [id]: {
             ...prevState.toDos[id],
-            isCompleted: false
+            isCompleted: false,
+            modifyAt: Date.now()
           }
         }
       };
       this._saveToDos(newState.toDos);
+      // console.log("_uncompleteToDo :",newState.toDos);
       return {...newState};
-    })
+    });
   };
   _completeToDo = id => {
     this.setState(prevState => {
-      console.log(prevState.toDos);
       const newState = {
         ...prevState,
         toDos:{
           ...prevState.toDos,
-          [id]: {// id가 있으면 업데이트
+          [id]: {
             ...prevState.toDos[id],
-            isCompleted: true
+            isCompleted: true,
+            modifyAt: Date.now()
           }
         }
       };
       this._saveToDos(newState.toDos);
-      console.log(newState.toDos);
+      // console.log("_completeToDo :",newState.toDos);
       return {...newState};
     })
   };
@@ -185,8 +192,11 @@ export default class App extends React.Component {
       return {...newState};
     })
   };
-  _saveToDos = newToDos => {
-    const saveToDos = AsyncStorage.setItem("toDos", JSON.stringify(newToDos));
+  _saveToDos = newToDos  => {
+    //console.log('save1 ',newToDos);
+    const revertedToDos = JSON.stringify(newToDos);
+    //console.log('save2 ',revertedToDos);
+    const saveToDos = AsyncStorage.setItem("toDos",revertedToDos);
   };
 }
 
