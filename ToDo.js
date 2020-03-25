@@ -50,7 +50,7 @@ export default class ToDo extends React.Component {
               ]} value={toDoValue}
                  multiline={true}
                  onChangeText={this._contorlInput}
-                 returnKeyType={"done"}
+                 returnKeyType={"next"}
                  onBlur={this._finishEditing}
                  autoFocus={true}
                  underlineColorAndroid={"transparent"}/>)

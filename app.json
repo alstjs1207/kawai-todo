@@ -26,6 +26,9 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "co.lotts.daily"
     }
   }
 }

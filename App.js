@@ -52,13 +52,17 @@ export default class App extends React.Component {
           returnKeyType={"done"}
           autoCorrect={false}
           onSubmitEditing={this._addToDos}
+          underlineColorAndroid={"transparent"}
+          enablesReturnKeyAutomatically={true} //아무것도 작성하지않으면 완료 버튼 비활성
         />
       {/* <ScrollView contentContainerStyle={styles.toDos}> */}
       <KeyboardAwareScrollView
         contentContainerStyle={styles.toDos}
         extraScrollHeight={130}
         >
-          {Object.values(toDos).reverse().map(toDo =>
+          {Object.values(toDos).sort( (a,b) => 
+            a.createdAt - b.createdAt
+          ).map(toDo =>
             (
               <ToDo
               key={toDo.id}
@@ -70,6 +74,11 @@ export default class App extends React.Component {
               )}
         </KeyboardAwareScrollView>
         {/* </ScrollView> */}
+      </View>
+      <View style={styles.footer}>
+        <Text style={styles.footer_text}>
+            Copyright 2020. Lotts. All rights reserved.
+        </Text>
       </View>
     </View>);
   }
@@ -216,10 +225,12 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: "white",
-    flex: 1,
+    flex: 13,
     width: width - 25,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
     ...Platform.select({
       ios: {
         shadowColor: "rgb(50,50,50)",
@@ -244,5 +255,13 @@ const styles = StyleSheet.create({
   },
   toDos: {
     alignItems: "center"
+  },
+  footer: {
+    flex: 1
+  },
+  footer_text: {
+    marginTop: 24,
+    color: "#f1f3f4",
+    fontSize: 11
   }
 });
