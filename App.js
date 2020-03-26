@@ -8,7 +8,8 @@ import {
   Dimensions,
   Platform,
   ScrollView,
-  AsyncStorage
+  AsyncStorage,
+  TouchableOpacity
 } from 'react-native';
 import ToDo from "./ToDo";
 import { AppLoading } from 'expo';
@@ -43,24 +44,36 @@ export default class App extends React.Component {
         Daily To Do
       </Text>
       <View style={styles.card}>
-        <TextInput
-          style={styles.input}
-          placeholder={"오늘의 할 일을 작성해 보세요"}
-          value={newToDo}
-          onChangeText={this._controlNewToDo}
-          placeholderTextColor={"#d1caca"}
-          returnKeyType={"done"}
-          autoCorrect={false}
-          onSubmitEditing={this._addToDos}
-          underlineColorAndroid={"transparent"}
-          enablesReturnKeyAutomatically={true} //아무것도 작성하지않으면 완료 버튼 비활성
-        />
+        <View style={styles.inputBox}>
+          <View style={styles.column}>
+            <TextInput
+              style={styles.input}
+              placeholder={"오늘의 할 일을 작성해 보세요"}
+              value={newToDo}
+              onChangeText={this._controlNewToDo}
+              placeholderTextColor={"#d1caca"}
+              returnKeyType={"next"}
+              autoCorrect={false}
+              multiline={true}
+              // onSubmitEditing={this._addToDos}
+              underlineColorAndroid={"transparent"}
+              enablesReturnKeyAutomatically={true} //아무것도 작성하지않으면 완료 버튼 비활성
+            />
+          </View>
+          <View style={styles.actions}>
+            <TouchableOpacity onPress={this._addToDos}>
+              <View style={styles.actionContainer}>
+                <Text style={styles.actionText}>✅</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
       {/* <ScrollView contentContainerStyle={styles.toDos}> */}
       <KeyboardAwareScrollView
         contentContainerStyle={styles.toDos}
-        extraScrollHeight={130}
+        extraScrollHeight={150}
         >
-          {Object.values(toDos).sort( (a,b) => 
+          {Object.values(toDos).sort( (a,b) =>
             a.createdAt - b.createdAt
           ).map(toDo =>
             (
@@ -247,9 +260,11 @@ const styles = StyleSheet.create({
     })
   },
   input: {
-    padding: 20,
+    padding: 10,
     borderBottomColor: "#bbb",
     borderBottomWidth: 1,
+    width: width - 50,
+    fontWeight: "600",
     fontSize: 20
 
   },
@@ -263,5 +278,24 @@ const styles = StyleSheet.create({
     marginTop: 24,
     color: "#f1f3f4",
     fontSize: 11
+  },
+  inputBox: {
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  column: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: width / 2,
+    marginVertical: 10
+  },
+  actions: {
+    flexDirection: "row"
+  },
+  actionContainer:{
+    marginVertical: 10,
+    marginHorizontal: 10
   }
 });

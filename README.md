@@ -31,3 +31,9 @@ sort를 이용한 순서 버그 수정
 # footer 추가
 
 Copyright 작성
+
+# 삭제시 Alert 추가
+
+import { Alert } from 'react-native';
+
+# todo 입력창 한번에 하기 쉽도록 수정

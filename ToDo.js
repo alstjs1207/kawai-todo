@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   Dimensions,
   TextInput,
-  ReactNative
+  ReactNative,
+  Alert
 } from 'react-native';
 
 import PropTypes from 'prop-types';
@@ -53,7 +54,9 @@ export default class ToDo extends React.Component {
                  returnKeyType={"next"}
                  onBlur={this._finishEditing}
                  autoFocus={true}
-                 underlineColorAndroid={"transparent"}/>)
+                 underlineColorAndroid={"transparent"}
+                 enablesReturnKeyAutomatically={true}
+               />)
             : (<Text style={[styles.text,
               isCompleted
                 ? styles.completedText
@@ -85,7 +88,7 @@ export default class ToDo extends React.Component {
                 <Text style={styles.actionText}>✍</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPressOut={(event) => {event.stopPropagation; deleteToDo(id)}}>
+            <TouchableOpacity onPressOut={this._alertCancel}>
               <View style={styles.actionContainer}>
                 <Text style={styles.actionText}>❌</Text>
               </View>
@@ -130,6 +133,20 @@ export default class ToDo extends React.Component {
     this.setState({toDoValue: text})
   };
 
+  _alertCancel = event => {
+    event.stopPropagation();
+      const {deleteToDo, id} = this.props;
+    Alert.alert(
+      'Alert',
+      '오늘의 일정을 삭제하시겠습니까?',
+      [
+        {text:'예', onPress: () => deleteToDo(id) },
+        {text:'아니오',onPress: () => '', style: 'cancel' }
+      ],
+      { cancelable: true }
+    );
+  };
+
 }
 
 const styles = StyleSheet.create({
@@ -144,7 +161,7 @@ const styles = StyleSheet.create({
   text: {
     fontWeight: "600",
     fontSize: 20,
-    marginVertical: 20
+    marginVertical: 10
   },
   circle: {
     width: 30,
@@ -181,7 +198,7 @@ const styles = StyleSheet.create({
   },
   actionText: {},
   input: {
-    marginVertical: 10,
+    marginVertical: 6,
     width: width / 2
   }
 });
