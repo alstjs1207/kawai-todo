@@ -52,7 +52,7 @@ export default class App extends React.Component {
               value={newToDo}
               onChangeText={this._controlNewToDo}
               placeholderTextColor={"#d1caca"}
-              returnKeyType={"next"}
+              returnKeyType={"return"}
               autoCorrect={false}
               multiline={true}
               // onSubmitEditing={this._addToDos}
